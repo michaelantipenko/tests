@@ -44,7 +44,7 @@ class UserFilter implements EntityFilter
      */
     private function checkId(string $id): bool
     {
-        return $this->rangeChecker($id, $this->id);
+        return $this->rangeChecker(trim($id), $this->id);
     }
 
     /**
@@ -54,7 +54,7 @@ class UserFilter implements EntityFilter
      */
     private function checkAge(string $age): bool
     {
-        return $this->rangeChecker($age, $this->age);
+        return $this->rangeChecker(trim($age), $this->age);
     }
 
     /**
@@ -64,7 +64,7 @@ class UserFilter implements EntityFilter
      */
     private function checkName(string $name): bool
     {
-        return $this->stringChecker($name, $this->name);
+        return $this->stringChecker(trim($name), $this->name);
     }
 
     /**
@@ -74,7 +74,7 @@ class UserFilter implements EntityFilter
      */
     private function checkEmail(string $email): bool
     {
-        return $this->stringChecker($email, $this->email);
+        return $this->stringChecker(trim($email), $this->email);
     }
 
     /**
