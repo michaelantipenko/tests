@@ -40,17 +40,15 @@ class EntityReader
     {
         $handle = fopen($this->file, 'r');
         $buffer = ltrim(fgets($handle, 4096));
-        $buffer = str_ireplace('<' . $this->rootTag . '>', '', $buffer);
+        $buffer = preg_replace("/<$this->rootTag?[^\>]+>/", '', $buffer, 1);
 
         while (!feof($handle)) {
             $buffer = $buffer . fgets($handle, 4096);
             while (($startPosition = mb_stripos($buffer, "</$this->itemTag>")) !== false) {
-                $lengthTag = mb_strlen("<$this->itemTag>");
-                $endPosition = $startPosition + $lengthTag + 1;
-                $item = mb_substr($buffer, $lengthTag, $startPosition - $lengthTag);
-                $buffer = mb_substr($buffer, $endPosition);
+                $tag = $this->parseTag($this->itemTag, $buffer, true);
+                $buffer = str_replace($tag, '', $buffer);
 
-                yield $this->parseItem($item);
+                yield $this->parseItem($tag);
             }
         }
         fclose($handle);
@@ -75,11 +73,12 @@ class EntityReader
      * Find tag value in the string.
      * @param string $name
      * @param string $string
+     * @param bool $fullMatch
      * @return string
      */
-    private function parseTag(string $name, string $string): string
+    private function parseTag(string $name, string $string, $fullMatch = false): string
     {
-        preg_match("/<$name>(.*)?<\/$name>/", $string, $matches);
-        return $matches[1];
+        preg_match("/<$name?[^\>]+>(.*?)<\/$name>/", $string, $matches);
+        return $fullMatch ? $matches[0] : $matches[1];
     }
 }
