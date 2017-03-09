@@ -78,7 +78,8 @@ class EntityReader
      */
     private function parseTag(string $name, string $string, $fullMatch = false): string
     {
-        preg_match("/<$name?[^\>]+>(.*?)<\/$name>/", $string, $matches);
-        return $fullMatch ? $matches[0] : $matches[1];
+        // preg_match("/<$name?[^\>]+>(.*?)<\/$name>/", $string, $matches);
+        preg_match("/<$name\s*>(.*?)<\/$name\s*>/", $string, $matches);
+        return (string)($fullMatch ? $matches[0] : $matches[1]);
     }
 }
